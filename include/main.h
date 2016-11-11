@@ -132,7 +132,9 @@ unsigned char leftClaw_p = 10;
 // Sensor Objects
 
 // Global Functions
-extern void driveSet();
+void driveSet(int, int); // defined in opcontrol
+void clawSet(int); // defined in opcontrol
+void armSet(int); // defined in opcontrol
 
 // End C++ export structure
 #ifdef __cplusplus
