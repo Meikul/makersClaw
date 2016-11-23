@@ -32,7 +32,7 @@
 void operatorControl() {
 	while (1) {
 		// --------------Drive-------------
-		driveSet(joystickGetAnalog(1, 1), joystickGetAnalog(1, 3)); // Tank drive
+		driveSet(-joystickGetAnalog(1, 2), joystickGetAnalog(1, 3)); // Tank drive
 
 		// -------------Claw---------------
 		if(joystickGetDigital(1, 6, JOY_DOWN)) // Close

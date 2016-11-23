@@ -115,16 +115,16 @@ void initialize();
 void operatorControl();
 
 // Motor Ports
-unsigned char rightClaw_p = 1;
-unsigned char frontRight_p = 2;
-unsigned char frontLeft_p = 3;
-unsigned char topRightLift_p = 4;
-unsigned char bottomRight_p = 5;
-unsigned char backLeft_p = 6;
-unsigned char topLeftLift_p = 7;
-unsigned char bottomLeftLift_p = 8;
-unsigned char backRight_p = 9;
-unsigned char leftClaw_p = 10;
+#define rightClaw_p  1
+#define frontRight_p  2
+#define frontLeft_p  3
+#define topRightLift_p  4
+#define bottomRight_p  5
+#define backLeft_p  6
+#define topLeftLift_p  7
+#define bottomLeftLift_p  8
+#define backRight_p  9
+#define leftClaw_p  10
 
 // Sensor Ports
 #define pot_p 1
