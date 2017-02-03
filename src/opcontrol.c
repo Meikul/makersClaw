@@ -12,41 +12,54 @@
 
 #include "main.h"
 
-/*
- * Runs the user operator control code. This function will be started in its own task with the
- * default priority and stack size whenever the robot is enabled via the Field Management System
- * or the VEX Competition Switch in the operator control mode. If the robot is disabled or
- * communications is lost, the operator control task will be stopped by the kernel. Re-enabling
- * the robot will restart the task, not resume it from where it left off.
- *
- * If no VEX Competition Switch or Field Management system is plugged in, the VEX Cortex will
- * run the operator control task. Be warned that this will also occur if the VEX Cortex is
- * tethered directly to a computer via the USB A to A cable without any VEX Joystick attached.
- *
- * Code running in this task can take almost any action, as the VEX Joystick is available and
- * the scheduler is operational. However, proper use of delay() or taskDelayUntil() is highly
- * recommended to give other tasks (including system tasks such as updating LCDs) time to run.
- *
- * This task should never exit; it should end with some kind of infinite loop, even if empty.
- */
+const unsigned int motors[128] =
+{
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0, 21, 21, 21, 22, 22, 22, 23, 24, 24,
+ 25, 25, 25, 25, 26, 27, 27, 28, 28, 28,
+ 28, 29, 30, 30, 30, 31, 31, 32, 32, 32,
+ 33, 33, 34, 34, 35, 35, 35, 36, 36, 37,
+ 37, 37, 37, 38, 38, 39, 39, 39, 40, 40,
+ 41, 41, 42, 42, 43, 44, 44, 45, 45, 46,
+ 46, 47, 47, 48, 48, 49, 50, 50, 51, 52,
+ 52, 53, 54, 55, 56, 57, 57, 58, 59, 60,
+ 61, 62, 63, 64, 65, 66, 67, 67, 68, 70,
+ 71, 72, 72, 73, 74, 76, 77, 78, 79, 79,
+ 80, 81, 83, 84, 84, 86, 86, 87, 87, 88,
+ 88, 89, 89, 90, 90,127,127,127
+};
+
+int lin (int power)
+{
+	if(power > 127) power = 127;
+	if(power < -127) power = -127;
+	if(power >= 0) return motors[power]; // Array can't handle negatives.
+	return -lin(-power); // Incase negative give positive then make negative.
+}
+
+void driveSet(int left, int right);
+
 void operatorControl() {
 	while (1) {
 		// --------------Drive-------------
-		driveSet(-joystickGetAnalog(1, 2), joystickGetAnalog(1, 3)); // Tank drive
+		//driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
+		int joyX = joystickGetAnalog(1, 1);
+		int joyY = joystickGetAnalog(1, 2);
+		driveSet(lin(joyY + joyX), lin(joyY - joyX)); // Arcade Drive
+
+
+
 
 		// -------------Claw---------------
-		if(joystickGetDigital(1, 6, JOY_DOWN)) // Close
+		int claw = joystickGetDigital(1, 6, JOY_DOWN) - (2 * joystickGetDigital(1, 6, JOY_UP));
+		static bool holding = false;
+		if(claw)
 		{
-			clawSet(-127);
+
 		}
-		else if(joystickGetDigital(1, 6, JOY_UP)) // Open
-		{
-			clawSet(127);
-		}
-		else
-		{
-			clawSet(0);
-		}
+
+
+
 		// -------------Lift---------------
 		if(joystickGetDigital(1, 5, JOY_DOWN)) // Down
 		{
@@ -55,9 +68,10 @@ void operatorControl() {
 		else if(joystickGetDigital(1, 5, JOY_UP)) // Up
 		{
 			armSet(127);
-			if(analogRead(pot_p) > 50) // open claw if arm is high enough to dump
+			if(analogRead(armPot_p) > 50) // open claw if arm is high enough to dump
 			{
 				clawSet(127);
+				holding = false;
 			}
 		}
 		else
@@ -68,25 +82,26 @@ void operatorControl() {
 	}
 }
 
-void driveSet(int right, int left)
+void driveSet(int left, int right)
 {
-	// Right side set to first argument. Left side set to second argument.
+		right = lin(right);
+		left = lin(left);
 		motorSet(frontRight_p, right);
 		motorSet(backRight_p, right);
 		motorSet(frontLeft_p, left);
 		motorSet(backLeft_p, left);
 }
 
-void clawSet(int motor)
+void clawSet(int power)
 {
-	motorSet(rightClaw_p, motor);
-	motorSet(leftClaw_p, -motor);
+	motorSet(rightClaw_p, power);
+	motorSet(leftClaw_p, -power);
 }
 
-void armSet(int motor)
+void armSet(int power)
 {
-	motorSet(topLeftLift_p, -motor);
-	motorSet(bottomLeftLift_p, motor);
-	motorSet(topRightLift_p, motor);
-	motorSet(bottomRight_p, -motor);
+	motorSet(topLeftLift_p, -power);
+	motorSet(bottomLeftLift_p, power);
+	motorSet(topRightLift_p, power);
+	motorSet(bottomRight_p, -power);
 }

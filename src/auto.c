@@ -26,5 +26,14 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+
+ void driveSet(int left, int right)
+ {
+ 		motorSet(frontRight_p, right);
+ 		motorSet(backRight_p, right);
+ 		motorSet(frontLeft_p, left);
+ 		motorSet(backLeft_p, left);
+ }
+ 
 void autonomous() {
 }

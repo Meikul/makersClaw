@@ -127,14 +127,17 @@ void operatorControl();
 #define leftClaw_p  10
 
 // Sensor Ports
-#define pot_p 1
+#define armPot_p 1
 
 // Sensor Objects
 
 // Global Functions
-void driveSet(int, int); // defined in opcontrol
-void clawSet(int); // defined in opcontrol
-void armSet(int); // defined in opcontrol
+          // Auto and Opcontrol both have their own driveSet
+void clawSet(int power); // defined in opcontrol
+void armSet(int power); // defined in opcontrol
+
+// Global Variables
+
 
 // End C++ export structure
 #ifdef __cplusplus
