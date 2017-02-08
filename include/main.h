@@ -128,6 +128,8 @@ void operatorControl();
 
 // Sensor Ports
 #define armPot_p 1
+#define rightClawPot_p 2
+#define leftClawPot_p 3
 
 // Sensor Objects
 
@@ -135,6 +137,7 @@ void operatorControl();
           // Auto and Opcontrol both have their own driveSet
 void clawSet(int power); // defined in opcontrol
 void armSet(int power); // defined in opcontrol
+int rectify(int value); // define in init
 
 // Global Variables
 

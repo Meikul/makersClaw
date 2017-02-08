@@ -34,12 +34,15 @@ int lin (int power)
 	if(power > 127) power = 127;
 	if(power < -127) power = -127;
 	if(power >= 0) return motors[power]; // Array can't handle negatives.
-	return -lin(-power); // Incase negative give positive then make negative.
+	return -lin(-power);
 }
 
 void driveSet(int left, int right);
+void clawControl(int left, int right);
 
 void operatorControl() {
+  bool holding = false;
+  bool home = false;
 	while (1) {
 		// --------------Drive-------------
 		//driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
@@ -51,15 +54,35 @@ void operatorControl() {
 
 
 		// -------------Claw---------------
-		int claw = joystickGetDigital(1, 6, JOY_DOWN) - (2 * joystickGetDigital(1, 6, JOY_UP));
-		static bool holding = false;
-		if(claw)
-		{
-
-		}
-
-
-
+    bool clawCloseBut = joystickGetDigital(1, 6, JOY_DOWN);
+    bool clawOpenBut = joystickGetDigital(1, 6, JOY_UP);
+		int claw = joystickGetDigital(1, 6, JOY_DOWN) + (2 * joystickGetDigital(1, 6, JOY_UP));
+    // 0 - neither    1 - bottom    2 - top    3 - both
+    switch(claw)
+    {
+      case 0:
+        if (holding) clawSet(-20);
+        if (home)
+        {
+          clawControl(70, 80); // positions are guesses
+        }
+        break;
+      case 1:
+        holding = true;
+        home = false;
+        clawSet(-127);
+        break;
+      case 2:
+        holding = false;
+        home = false;
+        clawSet(127);
+        break;
+      case 3:
+        holding = false;
+        home = true;
+        clawControl(70, 80);
+        break;
+    }
 		// -------------Lift---------------
 		if(joystickGetDigital(1, 5, JOY_DOWN)) // Down
 		{
@@ -70,7 +93,7 @@ void operatorControl() {
 			armSet(127);
 			if(analogRead(armPot_p) > 50) // open claw if arm is high enough to dump
 			{
-				clawSet(127);
+
 				holding = false;
 			}
 		}
@@ -90,6 +113,14 @@ void driveSet(int left, int right)
 		motorSet(backRight_p, right);
 		motorSet(frontLeft_p, left);
 		motorSet(backLeft_p, left);
+}
+
+void clawControl(int lPos, int rPos)
+{
+  int lErr = rectify(lPos - analogRead(rightClawPot_p));
+  int rErr = rectify(rPos - analogRead(leftClawPot_p));
+  motorSet(leftClaw_p, lErr);
+  motorSet(rightClaw_p, rErr);
 }
 
 void clawSet(int power)
