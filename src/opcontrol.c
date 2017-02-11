@@ -74,9 +74,13 @@ void operatorControl() {
     {
       case 0:
         if (holding) clawSet(-10);
-        if (home)
+        else if (home)
         {
           clawControl(1600, 1600); // positions are guesses
+        }
+        else
+        {
+          clawSet(0);
         }
         break;
       case 1:
@@ -137,8 +141,8 @@ void clawControl(int lPos, int rPos)
 
 void clawSet(int power)
 {
-	motorSet(rightClaw_p, power);
-	motorSet(leftClaw_p, -power);
+	motorSet(rightClaw_p, -power);
+	motorSet(leftClaw_p, power);
 }
 
 void armSet(int power)
