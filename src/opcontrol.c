@@ -37,6 +37,13 @@ int lin (int power)
 	return -lin(-power);
 }
 
+int rectify(int in)
+{
+  if (in < -127) return -127;
+  if (in > 127) return 127;
+  return in;
+}
+
 void driveSet(int left, int right);
 void clawControl(int left, int right);
 
@@ -45,26 +52,31 @@ void operatorControl() {
   bool home = false;
 	while (1) {
 		// --------------Drive-------------
-		//driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
-		int joyX = joystickGetAnalog(1, 1);
-		int joyY = joystickGetAnalog(1, 2);
-		driveSet(lin(joyY + joyX), lin(joyY - joyX)); // Arcade Drive
+		driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
+		// int joyX = joystickGetAnalog(1, 1);
+		// int joyY = joystickGetAnalog(1, 2);
+		// driveSet(lin(joyY + joyX), lin(joyY - joyX)); // Arcade Drive
 
 
 
 
 		// -------------Claw---------------
-    bool clawCloseBut = joystickGetDigital(1, 6, JOY_DOWN);
-    bool clawOpenBut = joystickGetDigital(1, 6, JOY_UP);
+    // bool clawCloseBut = joystickGetDigital(1, 6, JOY_DOWN);
+    // bool clawOpenBut = joystickGetDigital(1, 6, JOY_UP);
+    int rPot = analogRead(rightClawPot_p);
+    int lPot = analogRead(leftClawPot_p);
+
 		int claw = joystickGetDigital(1, 6, JOY_DOWN) + (2 * joystickGetDigital(1, 6, JOY_UP));
     // 0 - neither    1 - bottom    2 - top    3 - both
+    fprintf(stdout, "%d\n", rPot);
+    fprintf(stdout, "%d\n", lPot);
     switch(claw)
     {
       case 0:
-        if (holding) clawSet(-20);
+        if (holding) clawSet(-10);
         if (home)
         {
-          clawControl(70, 80); // positions are guesses
+          clawControl(1600, 1600); // positions are guesses
         }
         break;
       case 1:
@@ -80,7 +92,7 @@ void operatorControl() {
       case 3:
         holding = false;
         home = true;
-        clawControl(70, 80);
+        clawControl(1600, 1600);
         break;
     }
 		// -------------Lift---------------
