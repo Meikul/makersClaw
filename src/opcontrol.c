@@ -53,7 +53,7 @@ void operatorControl() {
 	while (1) {
     int clawTarget;
 		// --------------Drive-------------
-		driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
+		driveSet(joystickGetAnalog(1, 3), -joystickGetAnalog(1, 2)); // Tank drive
 		// int joyX = joystickGetAnalog(1, 1);
 		// int joyY = joystickGetAnalog(1, 2);
 		// driveSet(lin(joyY + joyX), lin(joyY - joyX)); // Arcade Drive

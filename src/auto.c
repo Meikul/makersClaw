@@ -35,20 +35,6 @@
  		motorSet(backLeft_p, left);
  }
 
- void armSet(int power)
- {
- 	motorSet(topLeftLift_p, -power);
- 	motorSet(bottomLeftLift_p, power);
- 	motorSet(topRightLift_p, power);
- 	motorSet(bottomRightLift_p, -power);
- }
-
- void clawSet(int power)
- {
-   motorSet(rightClaw_p, -power);
-   motorSet(leftClaw_p, power);
- }
-
 void autonomous()
 {
   driveSet(127, 127);
