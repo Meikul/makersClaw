@@ -116,10 +116,10 @@ void operatorControl();
 
 // Motor Ports
 #define rightClaw_p  1
-#define frontRight_p  2
+#define frontRight_p  2 // d
 #define frontLeft_p  3
 #define topRightLift_p  4
-#define bottomRight_p  5
+#define bottomRightLift_p  5 // c
 #define backLeft_p  6
 #define topLeftLift_p  7
 #define bottomLeftLift_p  8
@@ -127,11 +127,14 @@ void operatorControl();
 #define leftClaw_p  10
 
 // Sensor Ports
-#define armPot_p 1
+#define armEnc1_p 1
+#define armEnc2_p 2
+#define liftLimit_p 3
 #define rightClawPot_p 2
 #define leftClawPot_p 3
 
 // Sensor Objects
+Encoder liftEnc;
 
 // Global Functions
           // Auto and Opcontrol both have their own driveSet

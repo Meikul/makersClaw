@@ -13,12 +13,12 @@
 #include "main.h"
 
 
-int rectify(int value)
-{
-  if (value > 127) return 127;
-  if (value < -127) return -127;
-  return value;
-}
+// int rectify(int value)
+// {
+//   if (value > 127) return 127;
+//   if (value < -127) return -127;
+//   return value;
+// }
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
  * VEX Cortex is starting up. As the scheduler is still paused, most API functions will fail.
@@ -28,6 +28,7 @@ int rectify(int value)
  * configure a UART port (usartOpen()) but cannot set up an LCD (lcdInit()).
  */
 void initializeIO() {
+
 }
 
 /*
@@ -44,4 +45,5 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
+  liftEnc = encoderInit(armEnc1_p, armEnc2_p, 0);
 }

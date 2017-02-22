@@ -34,6 +34,34 @@
  		motorSet(frontLeft_p, left);
  		motorSet(backLeft_p, left);
  }
- 
-void autonomous() {
+
+ void armSet(int power)
+ {
+ 	motorSet(topLeftLift_p, -power);
+ 	motorSet(bottomLeftLift_p, power);
+ 	motorSet(topRightLift_p, power);
+ 	motorSet(bottomRightLift_p, -power);
+ }
+
+ void clawSet(int power)
+ {
+   motorSet(rightClaw_p, -power);
+   motorSet(leftClaw_p, power);
+ }
+
+void autonomous()
+{
+  driveSet(127, 127);
+  delay(3000);
+  driveSet(0, 0);
+  armSet(127);
+  delay(1000);
+  armSet(0);
+  clawSet(127);
+  delay(500);
+  driveSet(127, 127);
+  delay(3500);
+  driveSet(-127, -127);
+  delay(1000);
+  driveSet(127, 127);
 }

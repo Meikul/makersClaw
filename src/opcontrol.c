@@ -48,9 +48,10 @@ void driveSet(int left, int right);
 void clawControl(int left, int right);
 
 void operatorControl() {
-  bool holding = false;
-  bool home = false;
+  bool manualClaw = true;
+  bool clawClosing = false;
 	while (1) {
+    int clawTarget;
 		// --------------Drive-------------
 		driveSet(lin(joystickGetAnalog(1, 3)), lin(-joystickGetAnalog(1, 2))); // Tank drive
 		// int joyX = joystickGetAnalog(1, 1);
@@ -61,62 +62,74 @@ void operatorControl() {
 
 
 		// -------------Claw---------------
-    // bool clawCloseBut = joystickGetDigital(1, 6, JOY_DOWN);
-    // bool clawOpenBut = joystickGetDigital(1, 6, JOY_UP);
-    int rPot = analogRead(rightClawPot_p);
-    int lPot = analogRead(leftClawPot_p);
-
-		int claw = joystickGetDigital(1, 6, JOY_DOWN) + (2 * joystickGetDigital(1, 6, JOY_UP));
-    // 0 - neither    1 - bottom    2 - top    3 - both
-    fprintf(stdout, "%d\n", rPot);
-    fprintf(stdout, "%d\n", lPot);
-    switch(claw)
+    bool clawDown = joystickGetDigital(1, 6, JOY_DOWN);
+    bool clawUp = joystickGetDigital(1, 6, JOY_UP);
+    bool clawAutoOpen = joystickGetDigital(1, 8, JOY_DOWN);
+    if(clawUp)
     {
-      case 0:
-        if (holding) clawSet(-10);
-        else if (home)
+      clawClosing = false;
+      manualClaw = true;
+      clawSet(127);
+    }
+    else if(clawDown)
+    {
+      clawClosing = true;
+      manualClaw = true;
+      clawSet(-127);
+    }
+    else
+    {
+      if (clawClosing) clawSet(-10);
+      else
+      {
+        if(manualClaw)
         {
-          clawControl(1600, 1600); // positions are guesses
+          clawTarget = analogRead(rightClawPot_p);
+          int Err = clawTarget - analogRead(leftClawPot_p);
+          motorSet(leftClaw_p, 0.3*(Err));
+          motorSet(rightClaw_p, 0);
         }
         else
         {
-          clawSet(0);
+          int rErr = clawTarget - analogRead(rightClawPot_p);
+          int lErr = clawTarget - analogRead(leftClawPot_p);
+          motorSet(leftClaw_p, 0.3*(lErr));
+          motorSet(rightClaw_p, 0.3*(-rErr));
         }
-        break;
-      case 1:
-        holding = true;
-        home = false;
-        clawSet(-127);
-        break;
-      case 2:
-        holding = false;
-        home = false;
-        clawSet(127);
-        break;
-      case 3:
-        holding = false;
-        home = true;
-        clawControl(1600, 1600);
-        break;
+      }
     }
-		// -------------Lift---------------
-		if(joystickGetDigital(1, 5, JOY_DOWN)) // Down
-		{
-			armSet(-127);
-		}
-		else if(joystickGetDigital(1, 5, JOY_UP)) // Up
-		{
-			armSet(127);
-			if(analogRead(armPot_p) > 50) // open claw if arm is high enough to dump
-			{
+    if (clawAutoOpen)
+    {
+      clawClosing = false;
+      manualClaw = false;
+      clawTarget = 1600;
+    }
 
-				holding = false;
-			}
-		}
-		else
-		{
-			armSet(0);
-		}
+
+    // ---------- Lift ---------
+		int armUp = joystickGetDigital(1, 5, JOY_UP);
+    int armDown = joystickGetDigital(1, 5, JOY_DOWN);
+    long height = encoderGet(liftEnc);
+    bool liftLimit = digitalRead(liftLimit_p);
+    if (!liftLimit) encoderReset(liftEnc);
+    if(armUp)
+    {
+      armSet(127);
+      if(height > 260)
+      {
+        clawClosing = false;
+        manualClaw = false;
+        clawTarget = 1600;
+      }
+    }
+    else if(armDown)
+    {
+      armSet(-127);
+    }
+    else
+    {
+      armSet(0);
+    }
 		delay(20);
 	}
 }
@@ -131,13 +144,13 @@ void driveSet(int left, int right)
 		motorSet(backLeft_p, left);
 }
 
-void clawControl(int lPos, int rPos)
-{
-  int lErr = rectify(lPos - analogRead(rightClawPot_p));
-  int rErr = rectify(rPos - analogRead(leftClawPot_p));
-  motorSet(leftClaw_p, lErr);
-  motorSet(rightClaw_p, rErr);
-}
+// void clawControl(int lPos, int rPos)
+// {
+//   int lErr = rectify(lPos - analogRead(rightClawPot_p));
+//   int rErr = rectify(rPos - analogRead(leftClawPot_p));
+//   motorSet(leftClaw_p, lErr);
+//   motorSet(rightClaw_p, rErr);
+// }
 
 void clawSet(int power)
 {
@@ -150,5 +163,5 @@ void armSet(int power)
 	motorSet(topLeftLift_p, -power);
 	motorSet(bottomLeftLift_p, power);
 	motorSet(topRightLift_p, power);
-	motorSet(bottomRight_p, -power);
+	motorSet(bottomRightLift_p, -power);
 }
