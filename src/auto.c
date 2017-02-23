@@ -27,7 +27,7 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 
- void driveSet(int left, int right)
+ void goSet(int left, int right)
  {
  		motorSet(frontRight_p, right);
  		motorSet(backRight_p, right);
@@ -37,17 +37,19 @@
 
 void autonomous()
 {
-  driveSet(127, 127);
-  delay(3000);
-  driveSet(0, 0);
-  armSet(127);
-  delay(1000);
-  armSet(0);
-  clawSet(127);
-  delay(500);
-  driveSet(127, 127);
-  delay(3500);
-  driveSet(-127, -127);
-  delay(1000);
-  driveSet(127, 127);
+  goSet(127, 127); //driving forward
+  delay(3000); // driving forward for three seconds
+  goSet(0, 0); // stop driving
+  armSet(127); //arm goes up
+  delay(1000); //arm up for one second
+  armSet(0); // arm stop
+  clawSet(127); // claw begins to open.
+  delay(500); // begin to open claw to half open position
+  clawSet(0); // claw stops after half a second
+  goSet(127, 127); // drive forward again
+  delay(3500); // drive forward for three and a half seconds
+  goSet(0, 0); //drive stop
+  goSet(-127, -127); // go backwards for half a second
+  delay(500); // forward for half a second
+  goSet(127, 127); // go back for three quarters of a second
 }
