@@ -27,6 +27,10 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 
+// The only function that needs to be defined is the driveSet. It also needs to be called something other than driveSet.
+// Changed name to goSet.
+
+
  void goSet(int left, int right)
  {
  		motorSet(frontRight_p, right);
@@ -35,9 +39,9 @@
  		motorSet(backLeft_p, left);
  }
 
-void autonomous()
-{
-  goSet(127, 127); //driving forward
+void autonomous(){
+  // Knock over Forward - 8.5 Seconds
+  /*goSet(127, 127); //driving forward
   delay(3000); // driving forward for three seconds
   goSet(0, 0); // stop driving
   armSet(127); //arm goes up
@@ -52,4 +56,36 @@ void autonomous()
   goSet(-127, -127); // go backwards for half a second
   delay(500); // forward for half a second
   goSet(127, 127); // go back for three quarters of a second
+  */
+
+  // Cube Over - 9 Seconds
+  armSet(127); // arm pp
+  delay(500);
+  armSet(0); // arm stop
+  clawSet(127); // open claw
+  delay(1000);
+  clawSet(0); // claw stop (open to center)
+  armSet(-127); // arm down to level
+  delay(500);
+  armSet(0); // arm stop
+  goSet(127, 127); // go forward after claw is out
+  delay(2000);
+  goSet(0, 0); // stop drive
+  clawSet(-127); // close claw on cube
+  delay(1000);
+  clawSet(0); // claw stop closing
+  armSet(127); // arm up barely
+  delay(250);
+  armSet(0); // arm stop
+  goSet(0, 127); // turn right 180
+  delay(1000);
+  goSet(0, 0); // stop turn
+  armSet(127);
+  goSet(-127, -127);
+  delay(2000);
+  goSet(0, 0);
+  armSet(0);
+  clawSet(127);
+  delay(750);
+  clawSet(0);
 }
