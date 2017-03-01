@@ -1,35 +1,4 @@
-/** @file auto.c
- * @brief File for autonomous code
- *
- * This file should contain the user autonomous() function and any functions related to it.
- *
- * Any copyright is dedicated to the Public Domain.
- * http://creativecommons.org/publicdomain/zero/1.0/
- *
- * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
- * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
- */
-
 #include "main.h"
-
-/*
- * Runs the user autonomous code. This function will be started in its own task with the default
- * priority and stack size whenever the robot is enabled via the Field Management System or the
- * VEX Competition Switch in the autonomous mode. If the robot is disabled or communications is
- * lost,  the autonomous task will be stopped by the kernel. Re-enabling the robot will restart
- * the task, not re-start it from where it left off.
- *
- * Code running in the autonomous task cannot access information from the VEX Joystick. However,
- * the autonomous function can be invoked from another task if a VEX Competition Switch is not
- * available, and it can access joystick information if called in this way.
- *
- * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
- * so, the robot will await a switch to another mode or disable/enable cycle.
- */
-
-// The only function that needs to be defined is the driveSet. It also needs to be called something other than driveSet.
-// Changed name to goSet.
-
 
  void goSet(int left, int right)
  {
@@ -80,12 +49,52 @@ void autonomous(){
   goSet(0, 127); // turn right 180
   delay(1000);
   goSet(0, 0); // stop turn
-  armSet(127);
-  goSet(-127, -127);
+  armSet(127); // arm up
+  goSet(-127, -127); // backwards
   delay(2000);
-  goSet(0, 0);
-  armSet(0);
-  clawSet(127);
+  goSet(0, 0); // stop drive
+  armSet(0); // stop arm
+  clawSet(-127); // open claw
   delay(750);
-  clawSet(0);
+  clawSet(0); // stop open
+
+  //Base Stars - 10.35 seconds
+  armSet(127); // arm up
+  delay(1000);
+  armSet(0); // arm stop
+  clawSet(127); // claw open
+  delay(750);
+  clawSet(0); // claw stop
+  armSet(-127); // lift down
+  delay(1100);
+  armSet(0); // lift stop
+  goSet(127, 127); // go forward
+  delay(1750);
+  goSet(0, 0); // stop drive
+  clawSet(127); // claw close
+  delay(500);
+  clawSet(0); // claw stop
+  armSet(127); // arm up a bit
+  delay(750);
+  armSet(0); // arm stop
+  goSet(-127, -127); // reverse out from cube
+  delay(1000);
+  goSet(0, 0); // drive stop
+  goSet(-127, 127); // turn left
+  delay(750);
+  goSet(0, 0); // stop turn
+  goSet(127, 127); // drive forward
+  delay(1000);
+  goSet(0, 0); // stop drive
+  goSet(-127, 127); // turn left to back
+  delay(1000);
+  goSet(0, 0); // stop turn
+  goSet(-127, -127); // drive back
+  armSet(127); // begin to lift
+  delay(1750);
+  goSet(0, 0); // stop drive
+  armSet(0); // stop lift
+  clawSet(-127); // claw release
+  delay(750);
+  clawSet(0); // claw stop
 }
