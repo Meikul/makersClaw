@@ -28,7 +28,7 @@ void autonomous(){
   */
 
   // Cube Over - 9 Seconds
-  armSet(127); // arm pp
+  /*armSet(127); // arm pp
   delay(500);
   armSet(0); // arm stop
   clawSet(127); // open claw
@@ -57,6 +57,7 @@ void autonomous(){
   clawSet(-127); // open claw
   delay(750);
   clawSet(0); // stop open
+  */
 
   //Base Stars - 10.35 seconds
   armSet(127); // arm up
