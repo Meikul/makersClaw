@@ -132,9 +132,19 @@ void operatorControl();
 #define liftLimit_p 3
 #define rightClawPot_p 2
 #define leftClawPot_p 3
+#define skillsAuton_p 4
+#define starAuton_p 5
+#define lDrive1 6
+#define lDrive2 7
+#define rDrive1 8
+#define rDrive2 9
+
 
 // Sensor Objects
 Encoder liftEnc;
+Encoder rDrive;
+Encoder lDrive;
+
 
 // Global Functions
           // Auto and Opcontrol both have their own driveSet

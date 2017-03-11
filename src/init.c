@@ -46,4 +46,6 @@ void initializeIO() {
  */
 void initialize() {
   liftEnc = encoderInit(armEnc1_p, armEnc2_p, 0);
+  lDrive = encoderInit(rDrive1, rDrive2, 0);
+  rDrive = encoderInit(lDrive1, lDrive2, 0);
 }

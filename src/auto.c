@@ -1,5 +1,9 @@
 #include "main.h"
 
+ int lCounts = encoderGet(lDrive);
+ int rCounts = encoderGet(rDrive);
+
+
  void goSet(int left, int right)
  {
  		motorSet(frontRight_p, right);
@@ -9,6 +13,20 @@
  }
 
 void autonomous(){
+  // if(digitalRead(starAuton_p) == 0) {
+  //   goSet(-80, 127); //driving forward
+  //   delay(1800); // driving forward for three seconds
+  //   goSet(0, 0); // stop driving
+  //   armSet(127); //arm goes up
+  //   clawSet(-107); // claw begins to open.
+  //   delay(1000); //arm up for one second
+  //   armSet(0); // arm stop
+  //   clawSet(0);
+  //   armSet(-127);
+  //   delay(1000);
+  //   armSet(0);
+  // }
+
   // Knock over Forward - 8.5 Seconds
   /*goSet(127, 127); //driving forward
   delay(3000); // driving forward for three seconds
@@ -16,7 +34,7 @@ void autonomous(){
   armSet(127); //arm goes up
   delay(1000); //arm up for one second
   armSet(0); // arm stop
-  clawSet(127); // claw begins to open.
+  clawSet(1127); // claw begins to open.
   delay(500); // begin to open claw to half open position
   clawSet(0); // claw stops after half a second
   goSet(127, 127); // drive forward again
@@ -27,43 +45,60 @@ void autonomous(){
   goSet(127, 127); // go back for three quarters of a second
   */
 
-  // Cube Over - 9 Seconds
-  /*armSet(127); // arm pp
+  //if (digitalRead(cubeAndStar_p) == 0) {
+  // Cube Over - 12.725 Seconds
+  /*armSet(127);
+  delay(100);
+  armSet(0);
+  armSet(-127);
+  delay(120);
+  armSet(0);
+  goSet(127, -127);
+  clawSet(-127);
+  delay(400);
+  clawSet(0);
+  delay(450);
+  goSet(0, 0);
+  clawSet(-127);
   delay(500);
-  armSet(0); // arm stop
-  clawSet(127); // open claw
-  delay(1000);
-  clawSet(0); // claw stop (open to center)
-  armSet(-127); // arm down to level
-  delay(500);
-  armSet(0); // arm stop
-  goSet(127, 127); // go forward after claw is out
-  delay(2000);
-  goSet(0, 0); // stop drive
-  clawSet(-127); // close claw on cube
-  delay(1000);
-  clawSet(0); // claw stop closing
-  armSet(127); // arm up barely
-  delay(250);
-  armSet(0); // arm stop
-  goSet(0, 127); // turn right 180
-  delay(1000);
-  goSet(0, 0); // stop turn
-  armSet(127); // arm up
-  goSet(-127, -127); // backwards
-  delay(2000);
-  goSet(0, 0); // stop drive
-  armSet(0); // stop arm
-  clawSet(-127); // open claw
-  delay(750);
-  clawSet(0); // stop open
+  armSet(127);
+  goSet(-127, -127);
+  armSet(60);
+  delay(200);
+  goSet(-127, 127);
+  delay(300);
+  armSet(127);
+  clawSet(127);
+  delay(600);
+  goSet(0, 0);
+  armSet(0);
+  clawSet(0);
   */
+//}
+  //if (digitalRead(cubeAndStar_p) == 0) {
+    // goSet(-127, 80); //driving forward
+    // delay(1800); // driving forward for three seconds
+    // goSet(0, 0); // stop driving
+    // armSet(127); //arm goes up
+    // clawSet(-107); // claw begins to open.
+    // delay(1000); //arm up for one second
+    // armSet(0); // arm stop
+    // clawSet(0);
+    // armSet(-127);
+    // delay(1000);
+    // armSet(0);
+  //}
 
+  if (digitalRead(skillsAuton_p) == 0) {
+    encoderReset(lDrive);
+    encoderReset(rDrive);
+
+}
   //Base Stars - 10.35 seconds
-  armSet(127); // arm up
+  /*armSet(127); // arm up
   delay(1000);
   armSet(0); // arm stop
-  clawSet(127); // claw open
+  clawSet(1127); // claw open
   delay(750);
   clawSet(0); // claw stop
   armSet(-127); // lift down
@@ -72,7 +107,7 @@ void autonomous(){
   goSet(127, 127); // go forward
   delay(1750);
   goSet(0, 0); // stop drive
-  clawSet(127); // claw close
+  clawSet(1127); // claw close
   delay(500);
   clawSet(0); // claw stop
   armSet(127); // arm up a bit
@@ -98,4 +133,5 @@ void autonomous(){
   clawSet(-127); // claw release
   delay(750);
   clawSet(0); // claw stop
+  */
 }

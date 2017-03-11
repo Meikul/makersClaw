@@ -102,7 +102,7 @@ void operatorControl() {
     {
       clawClosing = false;
       manualClaw = false;
-      clawTarget = 1600;
+      clawTarget = 1200;
     }
 
 
@@ -110,25 +110,39 @@ void operatorControl() {
 		int armUp = joystickGetDigital(1, 5, JOY_UP);
     int armDown = joystickGetDigital(1, 5, JOY_DOWN);
     long height = encoderGet(liftEnc);
+    int armTarget;
     bool liftLimit = digitalRead(liftLimit_p);
     if (!liftLimit) encoderReset(liftEnc);
     if(armUp)
     {
       armSet(127);
-      if(height > 260)
+      armTarget = height;
+      if(height > 360)
       {
         clawClosing = false;
         manualClaw = false;
-        clawTarget = 1600;
+        clawTarget = 1200;
       }
     }
     else if(armDown)
     {
+      armTarget = height;
       armSet(-127);
+
     }
     else
     {
-      armSet(0);
+      // armSet(0);
+      if(height > 10 && height < 360)
+      {
+        armSet(0.4*(armTarget - height));
+      }
+      else
+      {
+        armTarget = height;
+        armSet(0);
+      }
+
     }
 		delay(20);
 	}
@@ -160,8 +174,7 @@ void clawSet(int power)
 
 void armSet(int power)
 {
-	motorSet(topLeftLift_p, -power);
-	motorSet(bottomLeftLift_p, power);
+	motorSet(topLeftLift_p, -power);	motorSet(bottomLeftLift_p, power);
 	motorSet(topRightLift_p, power);
 	motorSet(bottomRightLift_p, -power);
 }
