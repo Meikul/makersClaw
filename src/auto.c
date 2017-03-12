@@ -1,4 +1,5 @@
 #include "main.h"
+#include <math.h>
 
 void goSet(int left, int right)
 {
@@ -10,6 +11,7 @@ void goSet(int left, int right)
 
 void armWait(int angle)
 {
+  encoderReset(liftEnc);
   if(angle > 0)
   {
     while(encoderGet(liftEnc) < angle)
@@ -69,20 +71,18 @@ void dump()
 {
   armSet(127);
   armWait(150);
-  goSet(-100, 100);
-  armWait(360);
+  goSet(-70, 70);
+  armWait(300);
+  clawSet(127);
+  delay(300);
+  goSet(0, 0);
   clawWait(1200);
   armSet(0);
   goSet(0, 0);
-  delay(1000);
+  delay(300);
   armSet(-127);
-  armWait(10);
+  armWait(-360);
   armSet(0);
-}
-
-void goForward()
-{
-  goSet(127, -127);
 }
 
 void goBack()
@@ -90,14 +90,19 @@ void goBack()
   goSet(-127, 127);
 }
 
+void goForward()
+{
+  goSet(127, -127);
+}
+
 void goLeft()
 {
-  goSet(100, 100);
+  goSet(-100, -100);
 }
 
 void goRight()
 {
-  goSet(-100, -100);
+  goSet(100, 100);
 }
 
 void goStop()
@@ -105,21 +110,66 @@ void goStop()
     goSet(0, 0);
 }
 
+void rampDown()
+{
+  int begSpeed = motorGet(3);
+  int fSpeed = begSpeed;
+  int sign = begSpeed/abs(begSpeed);
+  begSpeed = abs(begSpeed);
+
+  for(int i = 0; abs(fSpeed)>10; i++)
+  {
+    // fSpeed = (begSpeed - ((begSpeed/4) * log(i)))*sign;
+    fSpeed = (begSpeed - (i*(begSpeed/4)))*sign;
+    goSet(fSpeed, -fSpeed);
+    delay(20);
+  }
+  goSet(0, 0);
+}
 
 void autonomous()
 {
   goBack();
-  driveWait(-100);
-  goStop();
+  armSet(127);
+  delay(200);
+  armSet(0);
+  clawSet(-127);
+  delay(230);
+  rampDown();
   clawWait(1200);
   goForward();
-  driveWait(100);
+  for(int i = 0; i<3; i++)
+  {
+    delay(250);
+    rampDown();
+    clawSet(-127);
+    delay(500);
+    goBack();
+    delay(350);
+    dump();
+    goForward();
+    delay(950);
+    goStop();
+  }
+  delay(750);
+  armSet(-127);
+  armWait(0);
+  goLeft();
+  delay(500);
   goStop();
+  clawSet(127);
+  clawWait(850);
+  clawSet(0);
+  goForward();
+  delay(1000);
+  rampDown();
+  clawSet(-127);
   clawWait(500);
-  goBack();
-  driveWait(150);
+  goRight();
+  delay(505);
   goStop();
   dump();
+
 }
 
 

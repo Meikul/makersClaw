@@ -117,7 +117,7 @@ void operatorControl() {
     {
       armSet(127);
       armTarget = height;
-      if(height > 360)
+      if(height > 420)
       {
         clawClosing = false;
         manualClaw = false;
